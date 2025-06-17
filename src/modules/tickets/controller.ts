@@ -1,15 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { TicketService } from "./service";
+import { safeHandler } from "../../common/safeHandler";
 
-export async function listTickets(
-  _req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const data = await TicketService.getAllTickets();
-    res.json(data);
-  } catch (err) {
-    next(err);
-  }
-}
+export const listTickets = safeHandler(async (req, res, next) => {
+  const data = await TicketService.getAllTickets();
+  res.json(data);
+});
