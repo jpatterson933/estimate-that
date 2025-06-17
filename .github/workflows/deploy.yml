@@ -29,6 +29,7 @@ jobs:
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
         run: |
-          # Deploy to the project associated with this token
-          railway up
+          # Deploy the specified service (required when the project has multiple services)
+          railway up --service "$SERVICE_ID"
