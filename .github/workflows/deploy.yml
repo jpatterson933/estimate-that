@@ -22,8 +22,13 @@ jobs:
       - name: Build TypeScript
         run: npm run build
 
+      # Install Railway CLI and trigger deployment
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
       - name: Deploy to Railway
-        uses: railwayapp/railway-action@v2
-        with:
-          railwayToken: ${{ secrets.RAILWAY_TOKEN }}
-          projectId: ${{ secrets.RAILWAY_PROJECT_ID }}
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          # If your project has a single service you can omit --service
+          railway up --project ${{ secrets.RAILWAY_PROJECT_ID }}
