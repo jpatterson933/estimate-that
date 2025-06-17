@@ -15,7 +15,7 @@ export const tickets = pgTable("tickets", {
   linearId: text("linear_id").unique(),
   title: text("title"),
   estimatePts: integer("estimate_pts"),
-  reminderAt: timestamp("reminder_at", { withTimezone: true }),
+  reminderAt: timestamp("reminder_at", { withTimezone: true }), // setting the reiminder should trigger a workflow that calculates the time and point - like current time plus reminder time deivdied by points equals that many points
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   completedAt: timestamp("completed_at", { withTimezone: true }),
   assigneeId: text("assignee_id"),
