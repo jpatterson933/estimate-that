@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/index.ts",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "db:generate": "drizzle-kit generate:pg",
+    "db:migrate": "drizzle-kit deploy"
   },
   "keywords": [
     "linear",
@@ -18,10 +20,14 @@
   "devDependencies": {
     "@types/node": "^20.0.0",
     "tsx": "^4.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "drizzle-kit": "^0.20.12",
+    "ts-node": "^10.9.1"
   },
   "dependencies": {
-    "zod": "^3.24.1",
-    "zod-openapi": "^4.2.3"
+    "dotenv": "^16.4.0",
+    "zod": "^3.22.4",
+    "drizzle-orm": "^0.29.5",
+    "pg": "^8.11.2"
   }
 }
