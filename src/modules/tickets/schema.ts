@@ -7,11 +7,11 @@ export type TicketRow = typeof tickets.$inferSelect;
 export const TicketSchema = z
   .object({
     id: z.number(),
-    title: z.string().nullable(),
-    branch: z.string().nullable(),
-    points: z.number().nullable(),
-    reminderAt: z.date().nullable(),
-    dateLastModified: z.date().nullable(),
+    title: z.string(),
+    branch: z.string(),
+    points: z.number(),
+    reminderAt: z.date(),
+    dateLastModified: z.date(),
   })
   .openapi({ ref: "Ticket", description: "A ticket from the database" });
 
@@ -25,11 +25,11 @@ export type Ticket = z.infer<typeof TicketSchema>;
 export function synthesizeTicket(row: TicketRow): Ticket {
   const ticket: Ticket = {
     id: row.id,
-    title: row.title,
-    branch: row.branch,
-    points: row.points ? Number(row.points) : null,
-    reminderAt: row.reminderAt,
-    dateLastModified: row.dateLastModified,
+    title: row.title ?? "",
+    branch: row.branch ?? "",
+    points: row.points ? Number(row.points) : 0,
+    reminderAt: row.reminderAt ?? new Date(),
+    dateLastModified: row.dateLastModified ?? new Date(),
   };
 
   return TicketSchema.parse(ticket);

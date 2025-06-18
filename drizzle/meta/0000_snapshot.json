@@ -1,5 +1,5 @@
 {
-  "id": "227e8b39-8f61-4869-a30c-dc9ff3e1d0b3",
+  "id": "41dbb881-469a-4f44-b8ca-664c539341de",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -18,13 +18,13 @@
           "name": "title",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "branch": {
           "name": "branch",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "points": {
           "name": "points",

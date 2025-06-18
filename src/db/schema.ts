@@ -14,8 +14,8 @@ export const pointEnum = pgEnum("point", ["1", "2", "3", "4", "5"]); // TODO: Co
 
 export const tickets = pgTable("tickets", {
   id: serial("id").primaryKey(),
-  title: text("title"),
-  branch: text("branch"),
+  title: text("title").notNull(),
+  branch: text("branch").notNull(),
   points: pointEnum("points"),
   reminderAt: timestamp("reminder_at"), // setting the reiminder should trigger a workflow that calculates the time and point - like current time plus reminder time deivdied by points equals that many points
   dateLastModified: timestamp("date_last_modified")
