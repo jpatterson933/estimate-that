@@ -1,13 +1,13 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { handleWebhook } from "../../modules/linear/controller";
+import { getAllIssues } from "../../modules/linear/controller";
 
 export const router = Router();
 
-// POST /linear/webhook – Handle Linear webhook events
-router.post(
-  "/webhook",
+// GET /linear/tickets – Return list of issues from Linear
+router.get(
+  "/issues",
   async (req: Request, res: Response, next: NextFunction) => {
-    await handleWebhook(req, res, next);
+    await getAllIssues(req, res, next);
   }
 );
 
