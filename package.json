@@ -27,6 +27,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "commander": "^14.0.0",
     "dotenv": "^16.4.0",
     "drizzle-orm": "^0.38.2",
     "express": "^4.19.2",

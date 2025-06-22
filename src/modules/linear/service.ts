@@ -23,7 +23,7 @@ export class LinearService {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${env.LINEAR_API_KEY}`,
+        Authorization: `${env.LINEAR_API_KEY}`,
       },
       body: JSON.stringify({ query }),
     });
