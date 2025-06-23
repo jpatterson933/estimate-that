@@ -1,5 +1,9 @@
 import { env } from "../../env";
 import { LinearIssueSchema, LinearIssue } from "./schema";
+import { serializeLinearIssue } from "./schema";
+import { db } from "../../db/client";
+import { linear_issues } from "../../db/schema";
+import { sql } from "drizzle-orm";
 
 export class LinearService {
   /**
@@ -61,5 +65,33 @@ export class LinearService {
     // Validate and return typed array of LinearIssue objects
     const nodes = json.data?.issues?.nodes ?? [];
     return LinearIssueSchema.array().parse(nodes);
+  }
+
+  /**
+   * Upsert Linear issues into the database.
+   * 1. Fetches issues from Linear via `getAllIssues`.
+   * 2. Serializes each issue to match `linear_issues` table shape.
+   * 3. Performs an upsert (insert or update on conflict by id).
+   *
+   * Returns the number of issues processed.
+   */
+  static async upsertIssues(teamKey: "1ED" = "1ED"): Promise<number> {
+    const issues = await this.getAllIssues(teamKey);
+
+    // Convert to DB-ready rows using the serializer (validates + adds custom fields)
+    const rows = issues.map((issue) => serializeLinearIssue(issue));
+
+    // Upsert each row. Keeping the loop simple for clarity; can be batch-optimized later.
+    for (const row of rows) {
+      await db
+        .insert(linear_issues)
+        .values(row as any) // cast for drizzle insert type compatibility
+        .onConflictDoUpdate({
+          target: linear_issues.id,
+          set: row as any,
+        });
+    }
+
+    return rows.length;
   }
 }

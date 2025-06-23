@@ -3,7 +3,6 @@ CREATE TYPE "public"."point" AS ENUM('1', '2', '3', '4', '5');--> statement-brea
 CREATE TABLE "linear_issues" (
 	"id" text PRIMARY KEY NOT NULL,
 	"title" text NOT NULL,
-	"description" text,
 	"number" integer NOT NULL,
 	"identifier" text NOT NULL,
 	"url" text NOT NULL,

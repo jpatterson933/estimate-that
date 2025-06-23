@@ -1,5 +1,9 @@
 **Proposed solution (concise)**
 
+# notes
+
+You've been assigned a linear ticket, would you like to estimate how many points this will take you to complete?
+
 **1 Architecture**
 
 - *Service* Node + TypeScript (runs in a single Railway container).
@@ -29,7 +33,7 @@
 
 ```
 tickets (
-  id              serial PK,
+  id              serial PK,aw
   linear_id       text unique,
   title           text,
   estimate_pts    int,
