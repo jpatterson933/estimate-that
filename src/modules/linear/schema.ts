@@ -51,16 +51,16 @@ export const LinearIssueDBSchema = z.object({
     name: z.string(),
     type: z.string(),
   }),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-  completedAt: z.string().nullable(),
-  dueDate: z.string().nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  completedAt: z.date().nullable(),
+  dueDate: z.date().nullable(),
   branchName: z.string().nullable(),
   estimatePoints: z.number(),
-  estimatedDueDate: z.string().nullable(),
+  estimatedDueDate: z.date().nullable(),
   estimateCorrectly: z.boolean().nullable(),
   estimateFeedback: z.string().nullable(),
-  reviewStartedAt: z.string().nullable(),
+  reviewStartedAt: z.date().nullable(),
   reviewDurationMs: z.number().nullable(),
 });
 
@@ -69,26 +69,37 @@ export type LinearIssue = z.infer<typeof LinearIssueSchema>;
 export type LinearIssueDB = z.infer<typeof LinearIssueDBSchema>;
 
 export const serializeLinearIssue = (data: any): LinearIssueDB => {
-  // First, validate the core Linear fields (strict schema)
-  const validatedLinear = LinearIssueSchema.parse(data);
+  // Validate the raw Linear payload first
+  const validated = LinearIssueSchema.parse(data);
 
-  // Custom estimation fields – provide defaults when absent
+  // Helper to convert ISO string or null to Date or null
+  const toDate = (value: string | null | undefined): Date | null =>
+    value ? new Date(value) : null;
+
+  // Convert date strings to Date objects for DB insertion
+  const convertedCore = {
+    ...validated,
+    createdAt: new Date(validated.createdAt),
+    updatedAt: new Date(validated.updatedAt),
+    completedAt: toDate(validated.completedAt),
+    dueDate: toDate(validated.dueDate),
+  } as const;
+
+  // Custom estimation fields – defaults
   const estimatePoints = (data as any).estimatePoints ?? 0;
-  const estimatedDueDate = (data as any).estimatedDueDate ?? null;
+  const estimatedDueDate = toDate((data as any).estimatedDueDate ?? null);
   const estimateCorrectly = (data as any).estimateCorrectly ?? null;
   const estimateFeedback = (data as any).estimateFeedback ?? null;
 
-  // Review-tracking fields
-  const reviewStartedAt = (data as any).reviewStartedAt ?? null;
+  // Review tracking
+  const reviewStartedAt = toDate((data as any).reviewStartedAt ?? null);
   const reviewDurationMs =
-    reviewStartedAt && validatedLinear.completedAt
-      ? Date.parse(validatedLinear.completedAt) -
-        Date.parse(reviewStartedAt as string)
+    reviewStartedAt && convertedCore.completedAt
+      ? convertedCore.completedAt.getTime() - reviewStartedAt.getTime()
       : null;
 
-  // Return merged object (core validated fields + custom additions)
   const result = {
-    ...validatedLinear,
+    ...convertedCore,
     estimatePoints,
     estimatedDueDate,
     estimateCorrectly,
@@ -97,6 +108,5 @@ export const serializeLinearIssue = (data: any): LinearIssueDB => {
     reviewDurationMs,
   } as const;
 
-  // Final validation against DB schema to ensure completeness
   return LinearIssueDBSchema.parse(result);
 };
