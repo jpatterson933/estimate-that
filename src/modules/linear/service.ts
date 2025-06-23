@@ -1,4 +1,5 @@
 import { env } from "../../env";
+import { LinearIssueSchema, LinearIssue } from "./schema";
 
 export class LinearService {
   /**
@@ -8,14 +9,11 @@ export class LinearService {
    * @param teamKey The team key (e.g. "1EDTECH") used in Linear.
    * getIssuesByTeam method removed; use getAllIssues (now scoped to "1EDTECH") instead.
    */
-  static async getAllIssues(teamKey?: "1ED"): Promise<any[]> {
-    const allIssues: any[] = [];
-    let afterCursor: string | undefined;
-
+  static async getAllIssues(teamKey: "1ED" = "1ED"): Promise<LinearIssue[]> {
     const query = `
         query {
           issues(first: 50, filter: {
-              team: {key: { eq: "1ED"}}, 
+              team: {key: { eq: "${teamKey}"}}, 
               assignee: {id: {eq: "526a6693-0f73-48f0-aca1-d6bbd6e1ad5a"}},
               state: {name: {in: ["In Progress", "Todo", "In Review"]}}
             }) {
@@ -26,10 +24,11 @@ export class LinearService {
             nodes {
               id
               identifier
+              number
               title
+              description
               priority
               createdAt
-              archivedAt
               updatedAt
               completedAt
               dueDate
@@ -58,7 +57,9 @@ export class LinearService {
     }
 
     const json = (await response.json()) as any;
-    // console.log(json);
-    return json.data?.issues?.nodes ?? [];
+
+    // Validate and return typed array of LinearIssue objects
+    const nodes = json.data?.issues?.nodes ?? [];
+    return LinearIssueSchema.array().parse(nodes);
   }
 }

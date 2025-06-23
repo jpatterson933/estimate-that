@@ -3,7 +3,6 @@ import { z } from "zod";
 export const LinearIssueSchema = z.object({
   id: z.string(),
   title: z.string(),
-  description: z.string().optional(),
   number: z.number(),
   identifier: z.string(),
   url: z.string().url(),
@@ -25,15 +24,14 @@ export const LinearIssueSchema = z.object({
   }),
   createdAt: z.string(),
   updatedAt: z.string(),
-  completedAt: z.string().optional(),
-  dueDate: z.string().optional(),
-  branchName: z.string().optional(),
+  completedAt: z.string().nullable(),
+  dueDate: z.string().nullable(),
+  branchName: z.string().nullable(),
 });
 
 export const LinearIssueDBSchema = z.object({
   id: z.string(),
   title: z.string(),
-  description: z.string().optional(),
   number: z.number(),
   identifier: z.string(),
   url: z.string().url(),
@@ -55,16 +53,22 @@ export const LinearIssueDBSchema = z.object({
   }),
   createdAt: z.string(),
   updatedAt: z.string(),
-  completedAt: z.string().optional(),
-  dueDate: z.string().optional(),
-  branchName: z.string().optional(),
+  completedAt: z.string().nullable(),
+  dueDate: z.string().nullable(),
+  branchName: z.string().nullable(),
+  estimatePoints: z.number(),
+  estimatedDueDate: z.string().nullable(),
+  estimateCorrectly: z.boolean().nullable(),
+  estimateFeedback: z.string().nullable(),
+  reviewStartedAt: z.string().nullable(),
+  reviewDurationMs: z.number().nullable(),
 });
 
 // Exported types inferred from schemas
 export type LinearIssue = z.infer<typeof LinearIssueSchema>;
 export type LinearIssueDB = z.infer<typeof LinearIssueDBSchema>;
 
-export const serializeLinearIssue = (data: LinearIssueDB) => {
+export const serializeLinearIssue = (data: any): LinearIssueDB => {
   // First, validate the core Linear fields (strict schema)
   const validatedLinear = LinearIssueSchema.parse(data);
 
@@ -77,12 +81,13 @@ export const serializeLinearIssue = (data: LinearIssueDB) => {
   // Review-tracking fields
   const reviewStartedAt = (data as any).reviewStartedAt ?? null;
   const reviewDurationMs =
-    reviewStartedAt && data.completedAt
-      ? Date.parse(data.completedAt) - Date.parse(reviewStartedAt as string)
+    reviewStartedAt && validatedLinear.completedAt
+      ? Date.parse(validatedLinear.completedAt) -
+        Date.parse(reviewStartedAt as string)
       : null;
 
   // Return merged object (core validated fields + custom additions)
-  return {
+  const result = {
     ...validatedLinear,
     estimatePoints,
     estimatedDueDate,
@@ -91,4 +96,7 @@ export const serializeLinearIssue = (data: LinearIssueDB) => {
     reviewStartedAt,
     reviewDurationMs,
   } as const;
+
+  // Final validation against DB schema to ensure completeness
+  return LinearIssueDBSchema.parse(result);
 };

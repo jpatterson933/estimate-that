@@ -18,7 +18,6 @@ export const linear_issues = pgTable("linear_issues", {
 
   /* ---- Core Linear fields ---- */
   title: text("title").notNull(),
-  description: text("description"),
   number: integer("number").notNull(),
   identifier: text("identifier").notNull(),
   url: text("url").notNull(),
