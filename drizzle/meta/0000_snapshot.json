@@ -1,16 +1,16 @@
 {
-  "id": "41dbb881-469a-4f44-b8ca-664c539341de",
+  "id": "b006719d-d97c-4e24-9f27-6d829f71ab96",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.tickets": {
-      "name": "tickets",
+    "public.linear_issues": {
+      "name": "linear_issues",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "text",
           "primaryKey": true,
           "notNull": true
         },
@@ -20,22 +20,118 @@
           "primaryKey": false,
           "notNull": true
         },
-        "branch": {
-          "name": "branch",
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "number": {
+          "name": "number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "identifier": {
+          "name": "identifier",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "points": {
-          "name": "points",
-          "type": "point",
-          "typeSchema": "public",
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "priority": {
+          "name": "priority",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "assignee": {
+          "name": "assignee",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "team": {
+          "name": "team",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "state": {
+          "name": "state",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         },
-        "reminder_at": {
-          "name": "reminder_at",
+        "due_date": {
+          "name": "due_date",
           "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "branch_name": {
+          "name": "branch_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "estimate_points": {
+          "name": "estimate_points",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "estimated_due_date": {
+          "name": "estimated_due_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "estimate_correctly": {
+          "name": "estimate_correctly",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "estimate_feedback": {
+          "name": "estimate_feedback",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "review_started_at": {
+          "name": "review_started_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "review_duration_ms": {
+          "name": "review_duration_ms",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
